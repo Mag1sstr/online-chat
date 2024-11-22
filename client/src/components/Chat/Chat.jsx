@@ -12,6 +12,7 @@ export default function Chat() {
   const [params, setParams] = useState(null);
   const [message, setMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [users, setUsers] = useState(0);
   const { search } = useLocation();
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search));
@@ -26,22 +27,37 @@ export default function Chat() {
     });
   }, []);
 
+  useEffect(() => {
+    socket.on("joinRoom", ({ data }) => {
+      setUsers(data.users.length);
+    });
+  }, []);
+
   const onEmojiClick = ({ emoji }) => setMessage(`${message} ${emoji}`);
 
-  console.log(message);
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    if (!message) return;
+
+    socket.emit("sendMessage", { message, params });
+
+    setMessage("");
+  };
+  // console.log(message);
 
   return (
     <div className="chat">
       <div className="chat__header">
         <p className="chat__header-title">{params?.room}</p>
-        <p className="chat__header-users">0 пользователей в комнате</p>
+        <p className="chat__header-users">{users} пользователей в комнате</p>
         <button className="chat__header-btn">Выйти из комнаты</button>
       </div>
       <div className="chat__main">
         <Messages messages={state} name={params?.name} />
       </div>
       <div className="chat__footer">
-        <form className="chat__form">
+        <form onSubmit={handleSubmit} className="chat__form">
           <input
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -62,7 +78,13 @@ export default function Chat() {
               </div>
             )}
           </div>
-          <button className="chat__form-btn">Отправить</button>
+          <button
+            type="submit"
+            onSubmit={handleSubmit}
+            className="chat__form-btn"
+          >
+            Отправить
+          </button>
         </form>
       </div>
     </div>
