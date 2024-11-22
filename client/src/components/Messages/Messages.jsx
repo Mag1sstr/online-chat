@@ -8,7 +8,7 @@ export default function Messages({ messages, name }) {
         const className = itsMe ? "chat__messages-me" : "chat__messages-user";
         return (
           <div key={i} className={`chat__messages-block ${className}`}>
-            <p>{user.name}</p>
+            <p className="chat__messages-name">{user.name}</p>
             <span className="chat__messages-item">{message}</span>
           </div>
         );

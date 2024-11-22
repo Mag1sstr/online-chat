@@ -1,0 +1,20 @@
+.chat__messages-block {
+  margin-bottom: 20px;
+}
+
+.chat__messages-name {
+  font-size: 16px;
+  margin-bottom: 10px;
+}
+.chat__messages-item {
+  padding: 10px 20px;
+  background-color: #6d6d6d;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+.chat__messages-block.chat__messages-me .chat__messages-item {
+  background-color: #5151dd;
+}
+.chat__messages-block.chat__messages-me {
+  text-align: end;
+}
