@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import smileImage from "../../images/happy-face.png";
 import EmojiPicker from "emoji-picker-react";
 import "./Chat.css";
@@ -13,6 +13,9 @@ export default function Chat() {
   const [message, setMessage] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const [users, setUsers] = useState(0);
+
+  const navigate = useNavigate();
+
   const { search } = useLocation();
   useEffect(() => {
     const searchParams = Object.fromEntries(new URLSearchParams(search));
@@ -51,7 +54,15 @@ export default function Chat() {
       <div className="chat__header">
         <p className="chat__header-title">{params?.room}</p>
         <p className="chat__header-users">{users} пользователей в комнате</p>
-        <button className="chat__header-btn">Выйти из комнаты</button>
+        <button
+          onClick={() => {
+            socket.emit("leftRoom", { params });
+            navigate("/");
+          }}
+          className="chat__header-btn"
+        >
+          Выйти из комнаты
+        </button>
       </div>
       <div className="chat__main">
         <Messages messages={state} name={params?.name} />
